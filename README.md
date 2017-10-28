@@ -11,3 +11,5 @@ Kod powstały podczas pierwszego hackatonu w [PixelRetroShop](https://pixelretro
 |zielony ludzik  |#000080|
 |elf      |#0000C0|
 |krasnal  |#0000FF|
+|denaturat|#00FF00|
+|wódka    |#00C000|
