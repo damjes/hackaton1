@@ -12,4 +12,4 @@ Kod powstały podczas pierwszego hackatonu w [PixelRetroShop](https://pixelretro
 |elf      |#0000C0|
 |krasnal  |#0000FF|
 |denaturat|#00FF00|
-|wódka    |#008000|
+|wódka    |#00C000|
