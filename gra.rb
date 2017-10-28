@@ -7,6 +7,43 @@ class Gienaddij
 		@upojenie = 0
 		@etanol = 0
 		@fiolet = 0
+		@grafika = Gosu::Image.load_tiles 'grafiki/rusek.png', 64, 64
+		@do_zmiany_klatki = 15
+		@klatka = 0
+		@sprajt = 0
+		@kierunek = 1
+	end
+
+	def ustaw x, y
+		@x = x
+		@y = y
+		@xprim = 0
+		@yprim = 0
+	end
+
+	def przesun delta
+		@xprim += delta
+		if @xprim > 32
+			@xprim = -32 + delta
+			@x += 1
+		elsif @xprim < -31
+			@xprim = 32 - delta
+			@x -= 1
+		end
+
+		@do_zmiany_klatki -= 1
+		if @do_zmiany_klatki < 0
+			@klatka += 1
+			@klatka = 0 if @klatka > 3
+			@do_zmiany_klatki = 15
+		end
+		@sprajt = @klatka + 24
+
+		@kierunek = if delta > 0
+			1
+		else
+			-1
+		end
 	end
 
 	def cios
@@ -16,6 +53,26 @@ class Gienaddij
 			@gra.przegral = true
 		end
 	end
+
+	def narysuj
+		@grafika[@sprajt].draw @x*64+@xprim+32*(1-@kierunek), @y*64+@yprim, 0, @kierunek
+	end
+
+	def probuj_przesunac
+		przesun -2 if Gosu.button_down? Gosu::KbLeft
+		przesun  2 if Gosu.button_down? Gosu::KbRight
+	end
+
+	def update
+		@do_zmiany_klatki -= 1
+		if @do_zmiany_klatki < 0
+			@klatka += 1
+			@klatka = 0 if @klatka > 3
+			@do_zmiany_klatki = 15
+		end
+		@sprajt = @klatka
+		probuj_przesunac
+	end
 end
 
 class Okno < Gosu::Window
@@ -24,6 +81,7 @@ class Okno < Gosu::Window
 		#super 800, 600, false
 		@caption = "Gienaddij Destilowicz"
 		@grafiki = Gosu::Image.load_tiles 'grafiki/pola.png', 64, 64
+		@gracz = Gienaddij.new self
 		wczytaj_plansze 'plansza.ppm'
 		show
 	end
@@ -52,7 +110,7 @@ class Okno < Gosu::Window
 	def przetworz_kolor strumien, x, y
 		kolor = czytaj_kolor strumien
 		if kolor == :gracz
-			@gracz = [x, y]
+			@gracz.ustaw x, y
 			return :niebo
 		else
 			return kolor
@@ -86,6 +144,7 @@ class Okno < Gosu::Window
 
 	def draw
 		rysuj_pola
+		@gracz.narysuj
 	end
 
 	def rysuj_pola
@@ -103,6 +162,11 @@ class Okno < Gosu::Window
 				@grafiki[numer].draw x*64, y*64, 0
 			end
 		end
+	end
+
+	def update
+		close if Gosu.button_down? Gosu::KbEscape
+		@gracz.update
 	end
 end
 

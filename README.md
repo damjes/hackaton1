@@ -17,4 +17,5 @@ Kod powstały podczas pierwszego hackatonu w [PixelRetroShop](https://pixelretro
 
 # FARENDA
 
-[ ] dodać grafikę liny z sierpem
+- [ ] dodać grafikę liny z sierpem
+- [ ] dodać ograniczenie na rozmiar planszy
