@@ -1,10 +1,39 @@
 require 'gosu'
 require 'json'
 
+module Rozmycie
+	def zacznij_rozmycie
+		@kat_rozmycia = 0
+	end
+
+	def klatka_rozmycia
+		@kat_rozmycia += 0.005
+		if @kat_rozmycia > 2 * Math::PI
+			@kat_rozmycia -= 2 * Math::PI
+		end
+	end
+
+	def rysuj_rozmyte obrazek, x, y, scale_x = 1, scale_y = 1
+		zmiana_x_1 = @gracz.upojenie * 3 * Math.sin(3 * @kat_rozmycia)
+		zmiana_y_1 = @gracz.upojenie * 3 * Math.sin(4 * @kat_rozmycia)
+
+		zmiana_x_2 = @gracz.upojenie * 3 * Math.sin(5 * @kat_rozmycia)
+		zmiana_y_2 = @gracz.upojenie * 3 * Math.sin(7 * @kat_rozmycia)
+
+		obrazek.draw x, y, 0, scale_x, scale_y
+		obrazek.draw x+zmiana_x_1.to_i, y+zmiana_y_1.to_i, 1, scale_x, scale_y, Gosu::Color.argb(0x80_ffffff)
+		obrazek.draw x+zmiana_x_2.to_i, y+zmiana_y_2.to_i, 1, scale_x, scale_y, Gosu::Color.argb(0x40_ffffff)
+	end
+end
+
 class Gienaddij
+	include Rozmycie
+
+	attr_reader :upojenie
+
 	def initialize gra
 		@gra = gra
-		@upojenie = 0
+		@upojenie = 100
 		@etanol = 0
 		@fiolet = 0
 		@grafika = Gosu::Image.load_tiles 'grafiki/rusek.png', 64, 64
@@ -12,6 +41,8 @@ class Gienaddij
 		@klatka = 0
 		@sprajt = 0
 		@kierunek = 1
+		@gracz = self #żeby działało rozmycie
+		zacznij_rozmycie
 	end
 
 	def ustaw x, y
@@ -55,7 +86,7 @@ class Gienaddij
 	end
 
 	def narysuj
-		@grafika[@sprajt].draw @x*64+@xprim+32*(1-@kierunek), @y*64+@yprim, 0, @kierunek
+		rysuj_rozmyte @grafika[@sprajt], @x*64+@xprim+32*(1-@kierunek), @y*64+@yprim, @kierunek
 	end
 
 	def probuj_przesunac
@@ -64,6 +95,7 @@ class Gienaddij
 	end
 
 	def update
+		klatka_rozmycia
 		@do_zmiany_klatki -= 1
 		if @do_zmiany_klatki < 0
 			@klatka += 1
@@ -76,10 +108,13 @@ class Gienaddij
 end
 
 class Okno < Gosu::Window
+	include Rozmycie
+
 	def initialize
 		super 1920, 1080, true
 		#super 800, 600, false
 		@caption = "Gienaddij Destilowicz"
+		zacznij_rozmycie
 		@grafiki = Gosu::Image.load_tiles 'grafiki/pola.png', 64, 64
 		@gracz = Gienaddij.new self
 		wczytaj_plansze 'plansza.ppm'
@@ -159,12 +194,13 @@ class Okno < Gosu::Window
 				else 0
 				end
 
-				@grafiki[numer].draw x*64, y*64, 0
+				rysuj_rozmyte @grafiki[numer], x*64, y*64
 			end
 		end
 	end
 
 	def update
+		klatka_rozmycia
 		close if Gosu.button_down? Gosu::KbEscape
 		@gracz.update
 	end
