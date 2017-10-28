@@ -14,3 +14,7 @@ Kod powstały podczas pierwszego hackatonu w [PixelRetroShop](https://pixelretro
 |krasnal       |#0000FF|
 |denaturat     |#00FF00|
 |wódka         |#00C000|
+
+# FARENDA
+
+[ ] dodać grafikę liny z sierpem
