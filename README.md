@@ -6,7 +6,7 @@ Kod powstały podczas pierwszego hackatonu w [PixelRetroShop](https://pixelretro
 
 
 |type|hex|
----
+|:---:|:---:|
 |drewno   |#C00000|
 |metal    |#FF0000|
 |skrzynka |#800000|
