@@ -2,9 +2,7 @@ Kod powstały podczas pierwszego hackatonu w [PixelRetroShop](https://pixelretro
 
 
 
-|#|#|#materials
-
-
+###materials
 |type|hex|
 |:---:|:---:|
 |drewno   |#C00000|
